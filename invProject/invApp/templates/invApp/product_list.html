@@ -1,0 +1,93 @@
+{% extends 'invApp/layout.html' %}
+<!---->
+{% block title %} Product List {% endblock %}
+<!-- -->
+<!---->
+{% block content %}
+<div class="container my-4">
+  <h1 class="text-center">Products</h1>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark text-center">
+        <tr>
+          <th>Product ID</th>
+          <th>Name</th>
+          <th>Stock Keeping Unit</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Supplier</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr class="text-center">
+          <td>{{product.product_id}}</td>
+          <td>{{product.name}}</td>
+          <td>{{product.stock_keep_unit}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.quantity}}</td>
+          <td>{{product.supplier}}</td>
+          <td>
+            <div class="d-flex justify-content-center gap-4">
+              <a
+                href="{% url 'product_update' product.product_id %}"
+                class="btn btn-primary btn-sm"
+                >Update</a
+              >
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteProductModal{{ product.product_id }}"
+                >Delete</button
+              >
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% for product in products %}
+  <div
+    class="modal fade"
+    id="deleteProductModal{{ product.product_id }}"
+    tabindex="-1"
+    aria-labelledby="deleteProductModalLabel{{ product.product_id }}"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2
+            class="modal-title fs-5"
+            id="deleteProductModalLabel{{ product.product_id }}"
+          >
+            Confirm product deletion
+          </h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete {{ product.name }}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <form method="post" action="{% url 'product_del' product.product_id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
